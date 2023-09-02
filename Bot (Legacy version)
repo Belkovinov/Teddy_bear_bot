@@ -1,0 +1,65 @@
+import telebot
+#import requests
+#import random
+#from bs4 import BeautifulSoup
+token='6610658610:AAGLq8Pu8_z3ruAYejqSYwmFsBTjiX9_zeo'
+bot=telebot.TeleBot(token)
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    welcome_text="""
+    Приветствую, друг. Используй клавиши снизу для того, чтобы узнать информацию, задать вопрос или начать сборку.
+    """
+    keyboard=telebot.types.ReplyKeyboardMarkup(row_width=1,resize_keyboard=True,one_time_keyboard=False)
+    button1=telebot.types.KeyboardButton("Начать собирать медведя")
+    button2=telebot.types.KeyboardButton("Получить краткое описание")
+    button3=telebot.types.KeyboardButton("Получить полное описание")
+    button4=telebot.types.KeyboardButton("Задать вопрос")
+    keyboard.add(button1,button2,button3,button4)
+    bot.send_message(message.chat.id,welcome_text, reply_markup=keyboard)
+
+@bot.message_handler(commands=['information'])
+def send_information(message):
+    information_text="""
+    Вот краткое описание!
+    """
+    bot.send_message(message.chat.id,information_text)
+
+@bot.message_handler(commands=['information_full'])
+def send_information_full(message):
+    information_full_text="""
+    Вот полное описание!
+    """
+    bot.send_message(message.chat.id,information_full_text)
+
+@bot.message_handler(commands=['question'])
+def send_question(message):
+    question_text = """
+    Здесь ты можешь задать свой вопрос. После я передам его своему создателю.
+    """
+    bot.send_message(message.chat.id, question_text)
+
+@bot.message_handler(commands=['assembly'])
+def send_assembly(message):
+    assembly_text = """
+    Начинаем сборку!
+    """
+    assemblyboard=telebot.types.ReplyKeyboardMarkup(row_width=1,resize_keyboard=True,one_time_keyboard=False)
+    button1=telebot.types.KeyboardButton("Опция сборки №1")
+    button2=telebot.types.KeyboardButton("Опция сборки №2")
+    button3=telebot.types.KeyboardButton("Опция сборки №3")
+    button4=telebot.types.KeyboardButton("Опция сборки №4")
+    assemblyboard.add(button1,button2,button3,button4)
+    bot.send_message(message.chat.id,assembly_text, reply_markup=assemblyboard)
+
+@bot.message_handler(content_types=['text'])
+def answer(message):
+    if message.text.strip()=="Получить краткое описание":
+        send_information(message)
+    elif message.text.strip()=="Получить полное описание":
+        send_information_full(message)
+    elif message.text.strip()=="Задать вопрос":
+        send_question(message)
+    elif message.text.strip()=="Начать собирать медведя":
+        send_assembly(message)
+bot.polling()
